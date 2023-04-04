@@ -7,7 +7,7 @@ import Row from './Row';
 const Table = () => {
     console.log('Table is rendered.');
     // Pagination
-    const size = 10;
+    const size = 50;
     const [paginatedUsers, setPaginatedUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const currentPageRef = useRef(currentPage);
