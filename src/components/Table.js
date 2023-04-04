@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { memo, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchAllUsersRequest } from '../callAPIs/user';
 import Pagination from './Pagination';
 import Row from './Row';
@@ -10,6 +10,7 @@ const Table = () => {
     const size = 10;
     const [paginatedUsers, setPaginatedUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const currentPageRef = useRef(currentPage);
     const [isLastPage, setIsLastPage] = useState(false);
     let selectedUser;
 
@@ -34,6 +35,7 @@ const Table = () => {
                     if (isLastPage) {
                         setIsLastPage(false);
                     }
+                    currentPageRef.current = currentPage;
                 }
             })
             .catch((error) => {
@@ -50,46 +52,32 @@ const Table = () => {
     }, []);
 
     const handleActive = useCallback((item) => {
-        console.log('handleActive - item: ', item);
         setCurrentPage(item);
-        console.log('handleActive - currentPage: ', currentPage);
     }, []);
 
     // Focus
     const [active, setActive] = useState();
     const setActiveRow = useCallback((no) => {
         selectedUser = no;
-        console.log('setActiveRow - selectedUser: ', selectedUser);
-        setActive(selectedUser);
+        setActive(no);
     }, []);
 
     const handleKeyDown = useCallback((e) => {
-        console.log('handleKeyDown - currentPage: ', currentPage);
-        console.log('handleKeyDown - size: ', size);
         switch (e.key) {
             case 'ArrowDown':
-                if (selectedUser && selectedUser < currentPage * size) {
-                    selectedUser += 1;
-                    setActiveRow(selectedUser);
+                if (selectedUser && selectedUser < currentPageRef.current * size) {
+                    setActiveRow(selectedUser + 1);
                 }
                 break;
             case 'ArrowUp':
-                if (selectedUser && selectedUser > (currentPage - 1) * size + 1) {
-                    selectedUser -= 1;
-                    setActiveRow(selectedUser);
+                if (selectedUser && selectedUser > (currentPageRef.current - 1) * size + 1) {
+                    setActiveRow(selectedUser - 1);
                 }
                 break;
             default:
                 break;
         }
     }, []);
-
-    if (!active) {
-        window.myFn1 = handleKeyDown;
-    } else {
-        window.myFn2 = handleKeyDown;
-        console.log('window.myFn1 === window.myFn2: ', window.myFn1 === window.myFn2);
-    }
 
     return (
         <>
@@ -152,4 +140,4 @@ const Table = () => {
     );
 };
 
-export default memo(Table);
+export default Table;
