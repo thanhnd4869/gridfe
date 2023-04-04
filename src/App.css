@@ -6,6 +6,10 @@
     margin-bottom: 0;
 }
 
+.table tbody tr:focus-visible {
+    outline: none;
+}
+
 .table tbody tr td:first-child {
     background-color: #adb5bd;
     color: #373737;
