@@ -4,6 +4,7 @@
 import { memo } from 'react';
 
 const Pagination = ({ isLastPage, currentPage, next, prev, handleActive }) => {
+    console.log('Pagination is rendered.');
     const initArray = new Array(5);
     initArray.fill('*');
     const array = initArray.map((element, index) => currentPage + index - 2);

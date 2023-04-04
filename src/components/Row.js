@@ -5,7 +5,7 @@ import { memo } from 'react';
 
 /* eslint-disable no-param-reassign */
 const Row = ({ user, onClick, isActive, onKeyDown }) => {
-    console.log('user.no: ', user.no);
+    console.log(`User #${user.no}'s row is rendered.`);
     return (
         <>
             <tr

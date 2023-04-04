@@ -1,16 +1,17 @@
 /* eslint-disable no-param-reassign */
-import { useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { fetchAllUsersRequest } from '../callAPIs/user';
 import Pagination from './Pagination';
 import Row from './Row';
 
 const Table = () => {
+    console.log('Table is rendered.');
     // Pagination
     const size = 10;
     const [paginatedUsers, setPaginatedUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isLastPage, setIsLastPage] = useState(false);
-    let temp;
+    let selectedUser;
 
     useEffect(() => {
         fetchAllUsersRequest({
@@ -21,7 +22,7 @@ const Table = () => {
                 if (response.data.length === 0) {
                     setIsLastPage(true);
                     setCurrentPage((page) => page - 1);
-                    console.log('This is last page!');
+                    console.log('This is last page.');
                 } else {
                     const userArray = response.data.map((element, key) => {
                         return {
@@ -49,31 +50,33 @@ const Table = () => {
     }, []);
 
     const handleActive = useCallback((item) => {
+        console.log('handleActive - item: ', item);
         setCurrentPage(item);
+        console.log('handleActive - currentPage: ', currentPage);
     }, []);
 
     // Focus
     const [active, setActive] = useState();
     const setActiveRow = useCallback((no) => {
-        temp = no;
-        console.log('setActiveRow - temp: ', temp);
-        setActive(temp);
+        selectedUser = no;
+        console.log('setActiveRow - selectedUser: ', selectedUser);
+        setActive(selectedUser);
     }, []);
 
     const handleKeyDown = useCallback((e) => {
-        console.log('currentPage: ', currentPage);
-        console.log('size: ', size);
+        console.log('handleKeyDown - currentPage: ', currentPage);
+        console.log('handleKeyDown - size: ', size);
         switch (e.key) {
             case 'ArrowDown':
-                if (temp && temp < currentPage * size) {
-                    temp += 1;
-                    setActiveRow(temp);
+                if (selectedUser && selectedUser < currentPage * size) {
+                    selectedUser += 1;
+                    setActiveRow(selectedUser);
                 }
                 break;
             case 'ArrowUp':
-                if (temp && temp > (currentPage - 1) * size + 1) {
-                    temp -= 1;
-                    setActiveRow(temp);
+                if (selectedUser && selectedUser > (currentPage - 1) * size + 1) {
+                    selectedUser -= 1;
+                    setActiveRow(selectedUser);
                 }
                 break;
             default:
@@ -149,4 +152,4 @@ const Table = () => {
     );
 };
 
-export default Table;
+export default memo(Table);
