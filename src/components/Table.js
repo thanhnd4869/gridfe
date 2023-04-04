@@ -5,12 +5,12 @@ import Pagination from './Pagination';
 import Row from './Row';
 
 const Table = () => {
-    console.log('Table');
     // Pagination
-    const size = 50;
+    const size = 10;
     const [paginatedUsers, setPaginatedUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isLastPage, setIsLastPage] = useState(false);
+    let temp;
 
     useEffect(() => {
         fetchAllUsersRequest({
@@ -55,24 +55,38 @@ const Table = () => {
     // Focus
     const [active, setActive] = useState();
     const setActiveRow = useCallback((no) => {
-        setActive(no);
+        temp = no;
+        console.log('setActiveRow - temp: ', temp);
+        setActive(temp);
     }, []);
 
-    const handleKeyDown = useCallback(
-        (e) => {
-            switch (e.key) {
-                case 'ArrowDown':
-                    setActiveRow(active + 1);
-                    break;
-                case 'ArrowUp':
-                    setActiveRow(active - 1);
-                    break;
-                default:
-                    break;
-            }
-        },
-        [active, setActiveRow],
-    );
+    const handleKeyDown = useCallback((e) => {
+        console.log('currentPage: ', currentPage);
+        console.log('size: ', size);
+        switch (e.key) {
+            case 'ArrowDown':
+                if (temp && temp < currentPage * size) {
+                    temp += 1;
+                    setActiveRow(temp);
+                }
+                break;
+            case 'ArrowUp':
+                if (temp && temp > (currentPage - 1) * size + 1) {
+                    temp -= 1;
+                    setActiveRow(temp);
+                }
+                break;
+            default:
+                break;
+        }
+    }, []);
+
+    if (!active) {
+        window.myFn1 = handleKeyDown;
+    } else {
+        window.myFn2 = handleKeyDown;
+        console.log('window.myFn1 === window.myFn2: ', window.myFn1 === window.myFn2);
+    }
 
     return (
         <>
@@ -117,11 +131,9 @@ const Table = () => {
                         <Row
                             key={key}
                             user={user}
-                            onClick={() => {
-                                setActiveRow(user.no);
-                            }}
+                            onClick={setActiveRow}
                             isActive={active === user.no}
-                            onKeyDown={(e) => handleKeyDown(e)}
+                            onKeyDown={handleKeyDown}
                         />
                     ))}
                 </tbody>
