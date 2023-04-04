@@ -1,16 +1,16 @@
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-plusplus */
 import { useCallback, useEffect, useState } from 'react';
-import Row from './Row';
-import Pagination from './Pagination';
 import { fetchAllUsersRequest } from '../callAPIs/user';
+import Pagination from './Pagination';
+import Row from './Row';
 
 const Table = () => {
+    console.log('Table');
+    // Pagination
     const size = 50;
     const [paginatedUsers, setPaginatedUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isLastPage, setIsLastPage] = useState(false);
-    const [active, setActive] = useState();
 
     useEffect(() => {
         fetchAllUsersRequest({
@@ -52,9 +52,27 @@ const Table = () => {
         setCurrentPage(item);
     }, []);
 
+    // Focus
+    const [active, setActive] = useState();
     const setActiveRow = useCallback((no) => {
         setActive(no);
     }, []);
+
+    const handleKeyDown = useCallback(
+        (e) => {
+            switch (e.key) {
+                case 'ArrowDown':
+                    setActiveRow(active + 1);
+                    break;
+                case 'ArrowUp':
+                    setActiveRow(active - 1);
+                    break;
+                default:
+                    break;
+            }
+        },
+        [active, setActiveRow],
+    );
 
     return (
         <>
@@ -102,7 +120,8 @@ const Table = () => {
                             onClick={() => {
                                 setActiveRow(user.no);
                             }}
-                            active={active === user.no}
+                            isActive={active === user.no}
+                            onKeyDown={(e) => handleKeyDown(e)}
                         />
                     ))}
                 </tbody>

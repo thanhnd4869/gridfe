@@ -4,10 +4,15 @@
 import { memo } from 'react';
 
 /* eslint-disable no-param-reassign */
-const Row = ({ user, onClick, active, handleArrowUpPressed, handleArrowDownPressed }) => {
+const Row = ({ user, onClick, isActive, onKeyDown }) => {
+    console.log(user.no);
     return (
         <>
-            <tr onClick={onClick} className={`${active ? 'active-row' : null}`}>
+            <tr
+                onClick={onClick}
+                className={`${isActive ? 'active-row' : null}`}
+                onKeyDown={onKeyDown}
+                tabIndex={user.no}>
                 <th scope="row">{user.no}</th>
                 <td>{user.firstName}</td>
                 <td>{user.lastName}</td>
